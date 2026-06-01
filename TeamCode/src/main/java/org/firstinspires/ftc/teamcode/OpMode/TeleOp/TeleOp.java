@@ -130,9 +130,7 @@ public class TeleOp extends OpMode {
         packet.put("target velocity", shooter.calculatedTargetVelocity);
         packet.put("target velocity", shooter.calculatedTargetVelocity);
 
-
         dashboard.sendTelemetryPacket(packet);
-
 
         telemetry.addData("Spindexer Slots", slotVisual.toString());
         telemetry.addData("Field Centric", FieldCentric);
