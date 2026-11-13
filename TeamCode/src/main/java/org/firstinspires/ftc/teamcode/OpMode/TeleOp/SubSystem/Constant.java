@@ -32,12 +32,12 @@ public class Constant {
 
     public static final String LIMELIGHT = "limelight";
 
-    public static final String ADJUSTABLE = "adjustable";
+    public static final String ADJUSTABLE = "hood";
     public static final String LIMITER    = "limiter";
     public static final String RAMP       = "ramp";
 
-    public static double LIMITER_OPEN   = 0.3;
-    public static double LIMITER_CLOSED = 0.9;
+    public static double LIMITER_OPEN   = 0.95;
+    public static double LIMITER_CLOSED = 0.01;
 
     public static double HOOD_MIN_POS = 0.3;
     public static double HOOD_MAX_POS = 0.8;
@@ -56,21 +56,19 @@ public class Constant {
 
     public static final DcMotorSimple.Direction SHOOTER_DIR = DcMotorSimple.Direction.FORWARD;
 
-    public static double kP = 0;
+    public static double kP = 0.001;
     public static double kI = 0;
     public static double kD = 0;
-    public static double kV = 0.0001575;
-    public static double kS = 0.0455;
+    public static double kF = 0.000176;
+    public static double NOMINAL_VOLTAGE = 12.8;
 
-    public static boolean SHOOTER_BOOST       = false;
+    public static boolean SHOOTER_BOOST       = true;
     public static double  SHOOTER_BOOST_BELOW = 0.10;
 
+    public static double SHOOTER_IDLE_RPM  = 4000;
+    public static double SHOOTER_SHOOT_RPM = 4300;
+    public static double SHOOTER_TARGET_RPM    = 3000;
     public static double SHOOTER_TOLERANCE_RPM = 100;
-    public static double NOMINAL_VOLTAGE       = 12.8;
     public static double SHOOTER_TICKS_PER_REV = 28;
-
-    public static double SHOOTER_TUNE_RPM     = 3200;
-    public static double SHOOTER_STEP_LOW_RPM  = 2000;
-    public static double SHOOTER_STEP_HIGH_RPM = 4000;
-    public static double SHOOTER_STEP_TIME     = 2.0;
+    public static double SHOOTER_VEL_ALPHA     = 1.0;
 }

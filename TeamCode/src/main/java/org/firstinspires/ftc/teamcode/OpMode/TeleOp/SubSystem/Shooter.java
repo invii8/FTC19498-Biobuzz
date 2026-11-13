@@ -14,12 +14,16 @@ public class Shooter {
     private final ElapsedTime voltTimer = new ElapsedTime();
 
     private PIDFController shooterPID;
-    private double lastKP, lastKI, lastKD;
+    public double usedKP, usedKI, usedKD, usedKF;
 
     public double targetRpm = 0;
+    public double rawRpm = 0;
     public double velocityRpm = 0;
     public double power = 0;
+    public double ff = 0;
+    public double pid = 0;
     public double voltage;
+    public boolean boosting = false;
 
     public Shooter(HardwareMap hwMap) {
         motor = hwMap.get(DcMotorEx.class, Constant.SHOOTER);
@@ -36,9 +40,9 @@ public class Shooter {
 
     private void buildPID() {
         shooterPID = new PIDFController(new PIDCoefficients(Constant.kP, Constant.kI, Constant.kD));
-        lastKP = Constant.kP;
-        lastKI = Constant.kI;
-        lastKD = Constant.kD;
+        usedKP = Constant.kP;
+        usedKI = Constant.kI;
+        usedKD = Constant.kD;
     }
 
     public void setTargetRpm(double rpm) {
@@ -47,40 +51,51 @@ public class Shooter {
     }
 
     public void update() {
-        if (lastKP != Constant.kP || lastKI != Constant.kI || lastKD != Constant.kD) {
+        if (usedKP != Constant.kP || usedKI != Constant.kI || usedKD != Constant.kD) {
             buildPID();
         }
+        usedKF = Constant.kF;
 
         if (voltTimer.seconds() > 0.25) {
             voltage = battery.getVoltage();
             voltTimer.reset();
         }
-        velocityRpm = motor.getVelocity() * 60.0 / Constant.SHOOTER_TICKS_PER_REV;
+
+        rawRpm = motor.getVelocity() * 60.0 / Constant.SHOOTER_TICKS_PER_REV;
+        velocityRpm += Constant.SHOOTER_VEL_ALPHA * (rawRpm - velocityRpm);
 
         if (targetRpm <= 0) {
+            ff = 0;
+            pid = 0;
             power = 0;
-        } else {
-            double voltageComp = Constant.NOMINAL_VOLTAGE / voltage;
-            double ff = (Constant.kV * targetRpm + Constant.kS) * voltageComp;
-
-            shooterPID.setTargetPosition(targetRpm);
-            double pidContribution = shooterPID.update(velocityRpm);
-
-            power = ff + pidContribution;
-            if (Constant.SHOOTER_BOOST && velocityRpm < targetRpm * (1 - Constant.SHOOTER_BOOST_BELOW)) power = 1;
-            power = Math.max(0, Math.min(1, power));
+            boosting = false;
+            motor.setPower(0);
+            return;
         }
+
+        ff = usedKF * targetRpm * (Constant.NOMINAL_VOLTAGE / voltage);
+
+        shooterPID.setTargetPosition(targetRpm);
+        pid = shooterPID.update(velocityRpm);
+
+        power = Math.max(0, Math.min(1, ff + pid));
+
+        boosting = Constant.SHOOTER_BOOST && velocityRpm < targetRpm * (1 - Constant.SHOOTER_BOOST_BELOW);
+        if (boosting) power = 1;
 
         motor.setPower(power);
     }
 
     public boolean atSpeed() {
-        return targetRpm > 0 && Math.abs(targetRpm - velocityRpm) < Constant.SHOOTER_TOLERANCE_RPM;
+        return targetRpm > 0 && velocityRpm >= targetRpm - Constant.SHOOTER_TOLERANCE_RPM;
     }
 
     public void stop() {
         setTargetRpm(0);
+        ff = 0;
+        pid = 0;
         power = 0;
+        boosting = false;
         motor.setPower(0);
     }
 }
