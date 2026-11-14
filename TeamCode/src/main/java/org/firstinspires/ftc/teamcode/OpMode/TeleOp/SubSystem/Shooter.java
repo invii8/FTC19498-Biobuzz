@@ -80,7 +80,7 @@ public class Shooter {
 
         power = Math.max(0, Math.min(1, ff + pid));
 
-        boosting = Constant.SHOOTER_BOOST && velocityRpm < targetRpm * (1 - Constant.SHOOTER_BOOST_BELOW);
+        boosting = Constant.SHOOTER_BOOST && velocityRpm < targetRpm - Constant.SHOOTER_BOOST_BELOW_RPM;
         if (boosting) power = 1;
 
         motor.setPower(power);

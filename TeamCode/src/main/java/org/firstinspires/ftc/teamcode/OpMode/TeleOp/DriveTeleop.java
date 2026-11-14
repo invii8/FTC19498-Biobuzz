@@ -18,6 +18,7 @@ public class DriveTeleop extends OpMode {
     private Shooter shooter;
     private DcMotor intake, transfer;
     private Servo limiter;
+    private Servo hood;
     private final ElapsedTime limiterTimer = new ElapsedTime();
     private boolean fieldCentric = false;
     private boolean intakeOn = false;
@@ -40,6 +41,9 @@ public class DriveTeleop extends OpMode {
 
         limiter = hardwareMap.get(Servo.class, Constant.LIMITER);
         limiter.setPosition(Constant.LIMITER_CLOSED);
+
+        hood = hardwareMap.get(Servo.class, Constant.ADJUSTABLE);
+        hood.setPosition(Constant.HOOD_MIN_POS);
     }
 
     @Override
@@ -54,13 +58,15 @@ public class DriveTeleop extends OpMode {
             limiterOpen = false;
         }
 
-        if (gamepad1.dpadUpWasPressed())   Constant.SHOOTER_TARGET_RPM += 100;
-        if (gamepad1.dpadDownWasPressed()) Constant.SHOOTER_TARGET_RPM = Math.max(0, Constant.SHOOTER_TARGET_RPM - 100);
+        if (gamepad1.dpadUpWasPressed())   Constant.SHOOTER_SHOOT_RPM += 100;
+        if (gamepad1.dpadDownWasPressed()) Constant.SHOOTER_SHOOT_RPM = Math.max(0, Constant.SHOOTER_SHOOT_RPM - 100);
 
         intake.setPower(intakeOn ? 1.0 : 0.0);
 
         shooter.setTargetRpm(shooting ? Constant.SHOOTER_SHOOT_RPM : Constant.SHOOTER_IDLE_RPM);
         shooter.update();
+
+        hood.setPosition(shooting ? Constant.HOOD_MAX_POS : Constant.HOOD_MIN_POS);
 
         if (shooting && !limiterOpen && shooter.atSpeed()) {
             limiterOpen = true;
@@ -68,7 +74,7 @@ public class DriveTeleop extends OpMode {
         }
         limiter.setPosition(limiterOpen ? Constant.LIMITER_OPEN : Constant.LIMITER_CLOSED);
 
-        boolean transferOn = limiterOpen && limiterTimer.seconds() >= TRANSFER_DELAY_SEC;
+        boolean transferOn = limiterOpen && limiterTimer.seconds() >= TRANSFER_DELAY_SEC && shooter.atSpeed();
         transfer.setPower(transferOn ? 1.0 : 0.0);
 
         drive.drive(-gamepad1.left_stick_y,
@@ -83,6 +89,7 @@ public class DriveTeleop extends OpMode {
         telemetry.addData("Shooter RPM", "%.0f / %.0f", shooter.velocityRpm, shooter.targetRpm);
         telemetry.addData("Shooter Ready", shooter.atSpeed());
         telemetry.addData("Limiter", limiterOpen ? "OPEN" : "CLOSED");
+        telemetry.addData("Hood", shooting ? "UP" : "DOWN");
         telemetry.addData("Drive Pos", "X=%.1f  Y=%.1f", drive.botX, drive.botY);
         telemetry.addData("Robot Heading", "%.2f", drive.headingDeg);
         telemetry.update();

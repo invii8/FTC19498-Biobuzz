@@ -39,8 +39,8 @@ public class Constant {
     public static double LIMITER_OPEN   = 0.95;
     public static double LIMITER_CLOSED = 0.01;
 
-    public static double HOOD_MIN_POS = 0.3;
-    public static double HOOD_MAX_POS = 0.8;
+    public static double HOOD_MIN_POS = 0.435;
+    public static double HOOD_MAX_POS = 0.5;
     public static final String TURRET_LEFT  = "turret_left";
     public static final String TURRET_RIGHT = "turret_right";
 
@@ -51,8 +51,8 @@ public class Constant {
     public static double TURRET_MIN_DEG      = -90;
     public static double TURRET_MAX_DEG      = 90;
     public static double TURRET_ANTIBACKLASH = 0.001;
-    public static double TURRET_OFFSET_X_IN  = 0;
-    public static double TURRET_OFFSET_Y_IN  = 0;
+    public static double TURRET_OFFSET_X_IN  = -1.6485;
+    public static double TURRET_OFFSET_Y_IN  = -2.5669;
 
     public static final DcMotorSimple.Direction SHOOTER_DIR = DcMotorSimple.Direction.FORWARD;
 
@@ -63,10 +63,10 @@ public class Constant {
     public static double NOMINAL_VOLTAGE = 12.8;
 
     public static boolean SHOOTER_BOOST       = true;
-    public static double  SHOOTER_BOOST_BELOW = 0.10;
+    public static double  SHOOTER_BOOST_BELOW_RPM = 100;
 
     public static double SHOOTER_IDLE_RPM  = 4000;
-    public static double SHOOTER_SHOOT_RPM = 4300;
+    public static double SHOOTER_SHOOT_RPM = 4000;
     public static double SHOOTER_TARGET_RPM    = 3000;
     public static double SHOOTER_TOLERANCE_RPM = 100;
     public static double SHOOTER_TICKS_PER_REV = 28;
