@@ -137,11 +137,15 @@ class PinpointForwardDirection extends TuningOpMode<Boolean> {
         localizer.setPose(new Pose(0, 0));
         waitForStart();
 
+        double x = 0;
         while (!isStopRequested()) {
             localizer.update();
+            if (!isStopRequested()) {
+                x = localizer.pose().x();
+            }
         }
 
-        return localizer.pose().x() < 0;
+        return x < 0;
     }
 }
 
@@ -178,11 +182,15 @@ class PinpointStrafeDirection extends TuningOpMode<Boolean> {
         PinpointLocalizer localizer = new PinpointLocalizer(hardwareMap, config);
         localizer.setPose(new Pose(0, 0));
         waitForStart();
+        double y = 0;
         while (!isStopRequested()) {
             localizer.update();
+            if (!isStopRequested()) {
+                y = localizer.pose().y();
+            }
         }
 
-        return localizer.pose().y() < 0;
+        return y < 0;
     }
 }
 

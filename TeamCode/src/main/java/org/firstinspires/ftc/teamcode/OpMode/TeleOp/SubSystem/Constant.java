@@ -9,7 +9,7 @@ public class Constant {
     public static final String FRONT_RIGHT = "front_right";
     public static final String BACK_LEFT   = "back_left";
     public static final String BACK_RIGHT  = "back_right";
-
+    public static final String Alliance = "";
     public static final DcMotorSimple.Direction FRONT_LEFT_DIR  = DcMotorSimple.Direction.REVERSE;
     public static final DcMotorSimple.Direction BACK_LEFT_DIR   = DcMotorSimple.Direction.REVERSE;
     public static final DcMotorSimple.Direction FRONT_RIGHT_DIR = DcMotorSimple.Direction.FORWARD;
@@ -25,10 +25,10 @@ public class Constant {
 
     public static final String ODO = "pinpoint";
 
-    public static double ODO_X_OFFSET_IN = 0;
-    public static double ODO_Y_OFFSET_IN = 0;
+    public static double ODO_X_OFFSET_IN = -1.6485;
+    public static double ODO_Y_OFFSET_IN = -2.5669;
     public static final boolean ODO_X_REVERSED = false;
-    public static final boolean ODO_Y_REVERSED = false;
+    public static final boolean ODO_Y_REVERSED = true;
 
     public static final String LIMELIGHT = "limelight";
 
@@ -36,7 +36,7 @@ public class Constant {
     public static final String LIMITER    = "limiter";
     public static final String RAMP       = "ramp";
 
-    public static double LIMITER_OPEN   = 0.95;
+    public static double LIMITER_OPEN   = 0.999999;
     public static double LIMITER_CLOSED = 0.01;
 
     public static double HOOD_MIN_POS = 0.435;
@@ -51,8 +51,8 @@ public class Constant {
     public static double TURRET_MIN_DEG      = -90;
     public static double TURRET_MAX_DEG      = 90;
     public static double TURRET_ANTIBACKLASH = 0.001;
-    public static double TURRET_OFFSET_X_IN  = -1.6485;
-    public static double TURRET_OFFSET_Y_IN  = -2.5669;
+    public static double TURRET_OFFSET_X_IN  = 0;
+    public static double TURRET_OFFSET_Y_IN  = 0;
 
     public static final DcMotorSimple.Direction SHOOTER_DIR = DcMotorSimple.Direction.FORWARD;
 
@@ -65,10 +65,14 @@ public class Constant {
     public static boolean SHOOTER_BOOST       = true;
     public static double  SHOOTER_BOOST_BELOW_RPM = 100;
 
-    public static double SHOOTER_IDLE_RPM  = 4000;
-    public static double SHOOTER_SHOOT_RPM = 4000;
+    public static double SHOOTER_IDLE_RPM  = 3700;
+    public static double SHOOTER_SHOOT_RPM = 3850;
     public static double SHOOTER_TARGET_RPM    = 3000;
     public static double SHOOTER_TOLERANCE_RPM = 100;
     public static double SHOOTER_TICKS_PER_REV = 28;
+
+    public static double AUTON_LIMITER_DELAY_SEC = 0.75;
+    public static double AUTON_SHOOT_TIME_SEC    = 3.0;
+    public static double AUTON_SHOOT_TIMEOUT_SEC = 7.0;
     public static double SHOOTER_VEL_ALPHA     = 1.0;
 }

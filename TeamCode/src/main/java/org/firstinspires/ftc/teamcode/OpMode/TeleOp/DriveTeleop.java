@@ -21,7 +21,6 @@ public class DriveTeleop extends OpMode {
     private Servo hood;
     private final ElapsedTime limiterTimer = new ElapsedTime();
     private boolean fieldCentric = false;
-    private boolean intakeOn = false;
     private boolean shooting = false;
     private boolean limiterOpen = false;
 
@@ -52,7 +51,6 @@ public class DriveTeleop extends OpMode {
 
         if (gamepad1.aWasPressed()) fieldCentric = !fieldCentric;
         if (gamepad1.yWasPressed()) drive.resetHeading();
-        if (gamepad1.leftBumperWasPressed()) intakeOn = !intakeOn;
         if (gamepad1.rightBumperWasPressed()) {
             shooting = !shooting;
             limiterOpen = false;
@@ -60,8 +58,6 @@ public class DriveTeleop extends OpMode {
 
         if (gamepad1.dpadUpWasPressed())   Constant.SHOOTER_SHOOT_RPM += 100;
         if (gamepad1.dpadDownWasPressed()) Constant.SHOOTER_SHOOT_RPM = Math.max(0, Constant.SHOOTER_SHOOT_RPM - 100);
-
-        intake.setPower(intakeOn ? 1.0 : 0.0);
 
         shooter.setTargetRpm(shooting ? Constant.SHOOTER_SHOOT_RPM : Constant.SHOOTER_IDLE_RPM);
         shooter.update();
@@ -74,8 +70,11 @@ public class DriveTeleop extends OpMode {
         }
         limiter.setPosition(limiterOpen ? Constant.LIMITER_OPEN : Constant.LIMITER_CLOSED);
 
-        boolean transferOn = limiterOpen && limiterTimer.seconds() >= TRANSFER_DELAY_SEC && shooter.atSpeed();
-        transfer.setPower(transferOn ? 1.0 : 0.0);
+        boolean intakeHeld = gamepad1.left_trigger > 0.5;
+        boolean feeding = limiterOpen && limiterTimer.seconds() >= TRANSFER_DELAY_SEC;
+
+        intake.setPower(intakeHeld || feeding ? 1.0 : 0.0);
+        transfer.setPower(feeding ? 1.0 : 0.0);
 
         drive.drive(-gamepad1.left_stick_y,
                 gamepad1.left_stick_x,
@@ -83,8 +82,8 @@ public class DriveTeleop extends OpMode {
                 fieldCentric);
 
         telemetry.addData("Field Centric", fieldCentric);
-        telemetry.addData("Intake", intakeOn);
-        telemetry.addData("Transfer", transferOn);
+        telemetry.addData("Intake", intakeHeld || feeding);
+        telemetry.addData("Transfer", feeding);
         telemetry.addData("Shooting", shooting);
         telemetry.addData("Shooter RPM", "%.0f / %.0f", shooter.velocityRpm, shooter.targetRpm);
         telemetry.addData("Shooter Ready", shooter.atSpeed());
