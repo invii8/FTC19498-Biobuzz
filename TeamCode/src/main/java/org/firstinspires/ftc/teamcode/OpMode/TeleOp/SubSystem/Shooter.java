@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.Map;
+
 public class Shooter {
     public DcMotorEx motor;
     private final VoltageSensor battery;
@@ -97,5 +99,16 @@ public class Shooter {
         power = 0;
         boosting = false;
         motor.setPower(0);
+    }
+
+    public static double rpmForDistance(double distance) {
+        Map.Entry<Double, Double> low = Constant.SHOOT_TABLE.floorEntry(distance);
+        Map.Entry<Double, Double> high = Constant.SHOOT_TABLE.ceilingEntry(distance);
+        if (low == null && high == null) return Constant.SHOOTER_SHOOT_RPM;
+        if (low == null) return high.getValue();
+        if (high == null) return low.getValue();
+        if (low.getKey().equals(high.getKey())) return low.getValue();
+        double t = (distance - low.getKey()) / (high.getKey() - low.getKey());
+        return low.getValue() + t * (high.getValue() - low.getValue());
     }
 }
