@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.MecanumDrive;
 
-@TeleOp(name = "Odo Test", group = "99")
+@TeleOp(name = "Odo Test", group = "98")
 public class Drive extends OpMode {
     private MecanumDrive drive;
     private FtcDashboard dashboard;

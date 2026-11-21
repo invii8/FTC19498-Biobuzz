@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.OpMode.TeleOp;
 
+import static org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Constant.RAMP_DOWN_POS;
+import static org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Constant.RAMP_UP_POS;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -22,7 +25,7 @@ import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Shooter;
 import java.util.List;
 
 @Config
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Tele Aviv", group = "00")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Tele Of All Time", group = "00")
 public class ComboTele extends OpMode {
     public static double TRANSFER_DELAY_SEC = 0.75;
 
@@ -38,8 +41,6 @@ public class ComboTele extends OpMode {
     public static boolean WAIT_FOR_AIM        = true;
     public static double MAX_STALENESS_MS     = 100;
 
-    public static double RAMP_UP_POS          = 0.94;
-    public static double RAMP_DOWN_POS        = 0.62;
     private static final int[] RED_TOP_TAGS     = {32, 31};
     private static final int[] RED_BOTTOM_TAGS  = {35, 36};
     private static final int[] BLUE_TOP_TAGS    = {44, 43};

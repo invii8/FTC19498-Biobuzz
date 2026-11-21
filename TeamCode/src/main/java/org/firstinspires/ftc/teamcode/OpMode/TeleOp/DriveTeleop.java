@@ -1,104 +1,169 @@
-package org.firstinspires.ftc.teamcode.OpMode.TeleOp;
-
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Constant;
-import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.MecanumDrive;
-import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Shooter;
-
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Current Teleop", group = "00")
-public class DriveTeleop extends OpMode {
-    private static final double TRANSFER_DELAY_SEC = 0.75;
-
-    private MecanumDrive drive;
-    private Shooter shooter;
-    private DcMotor intake, transfer;
-    private Servo limiter;
-    private Servo hood;
-    private final ElapsedTime limiterTimer = new ElapsedTime();
-    private boolean fieldCentric = false;
-    private boolean shooting = false;
-    private boolean limiterOpen = false;
-
-    @Override
-    public void init() {
-        drive = new MecanumDrive(hardwareMap);
-        shooter = new Shooter(hardwareMap);
-
-        intake   = hardwareMap.get(DcMotor.class, Constant.INTAKE);
-        transfer = hardwareMap.get(DcMotor.class, Constant.TRANSFER);
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        transfer.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        limiter = hardwareMap.get(Servo.class, Constant.LIMITER);
-        limiter.setPosition(Constant.LIMITER_CLOSED);
-
-        hood = hardwareMap.get(Servo.class, Constant.ADJUSTABLE);
-        hood.setPosition(Constant.HOOD_MIN_POS);
-    }
-
-    @Override
-    public void loop() {
-        drive.update();
-
-        if (gamepad1.aWasPressed()) fieldCentric = !fieldCentric;
-        if (gamepad1.yWasPressed()) drive.resetHeading();
-        if (gamepad1.rightBumperWasPressed()) {
-            shooting = !shooting;
-            limiterOpen = false;
-        }
-
-        if (gamepad1.dpadUpWasPressed())   Constant.SHOOTER_SHOOT_RPM += 100;
-        if (gamepad1.dpadDownWasPressed()) Constant.SHOOTER_SHOOT_RPM = Math.max(0, Constant.SHOOTER_SHOOT_RPM - 100);
-
-        shooter.setTargetRpm(shooting ? Constant.SHOOTER_SHOOT_RPM : Constant.SHOOTER_IDLE_RPM);
-        shooter.update();
-
-        hood.setPosition(shooting ? Constant.HOOD_MAX_POS : Constant.HOOD_MIN_POS);
-
-        if (shooting && !limiterOpen && shooter.atSpeed()) {
-            limiterOpen = true;
-            limiterTimer.reset();
-        }
-        limiter.setPosition(limiterOpen ? Constant.LIMITER_OPEN : Constant.LIMITER_CLOSED);
-
-        boolean intakeHeld = gamepad1.left_trigger > 0.5;
-        boolean feeding = limiterOpen && limiterTimer.seconds() >= TRANSFER_DELAY_SEC;
-
-        intake.setPower(intakeHeld || feeding ? 1.0 : 0.0);
-        transfer.setPower(feeding ? 1.0 : 0.0);
-
-        drive.drive(-gamepad1.left_stick_y,
-                gamepad1.left_stick_x,
-                gamepad1.right_stick_x,
-                fieldCentric);
-
-        telemetry.addData("Field Centric", fieldCentric);
-        telemetry.addData("Intake", intakeHeld || feeding);
-        telemetry.addData("Transfer", feeding);
-        telemetry.addData("Shooting", shooting);
-        telemetry.addData("Shooter RPM", "%.0f / %.0f", shooter.velocityRpm, shooter.targetRpm);
-        telemetry.addData("Shooter Ready", shooter.atSpeed());
-        telemetry.addData("Limiter", limiterOpen ? "OPEN" : "CLOSED");
-        telemetry.addData("Hood", shooting ? "UP" : "DOWN");
-        telemetry.addData("Drive Pos", "X=%.1f  Y=%.1f", drive.botX, drive.botY);
-        telemetry.addData("Robot Heading", "%.2f", drive.headingDeg);
-        telemetry.update();
-    }
-
-    @Override
-    public void stop() {
-        drive.stop();
-        shooter.stop();
-        intake.setPower(0);
-        transfer.setPower(0);
-    }
-}
+//package org.firstinspires.ftc.teamcode.OpMode.TeleOp;
+//
+//import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+//import com.qualcomm.robotcore.hardware.DcMotor;
+//import com.qualcomm.robotcore.hardware.DcMotorSimple;
+//import com.qualcomm.robotcore.hardware.Servo;
+//import com.qualcomm.robotcore.util.ElapsedTime;
+//
+//import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+//import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+//import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+//import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Constant;
+//import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Field;
+//import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.MecanumDrive;
+//import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Shooter;
+//
+//@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Current Teleop", group = "00")
+//public class DriveTeleop extends OpMode {
+//    private static final double TRANSFER_DELAY_SEC = 0.75;
+//
+//    private MecanumDrive drive;
+//    private Shooter shooter;
+//    private DcMotor intake, transfer;
+//    private Servo limiter;
+//    private Servo hood;
+//    private final ElapsedTime limiterTimer = new ElapsedTime();
+//    private boolean fieldCentric = false;
+//    private boolean shooting = false;
+//    private boolean limiterOpen = false;
+//    private boolean lastShootTrigger = false;
+//    private boolean lastBothBumpers = false;
+//    private boolean topHive = true;
+//
+//    @Override
+//    public void init() {
+//        drive = new MecanumDrive(hardwareMap);
+//        shooter = new Shooter(hardwareMap);
+//
+//        intake   = hardwareMap.get(DcMotor.class, Constant.INTAKE);
+//        transfer = hardwareMap.get(DcMotor.class, Constant.TRANSFER);
+//        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+//        transfer.setDirection(DcMotorSimple.Direction.REVERSE);
+//        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        transfer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+//        transfer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+//
+//        limiter = hardwareMap.get(Servo.class, Constant.LIMITER);
+//        limiter.setPosition(Constant.LIMITER_CLOSED);
+//
+//        hood = hardwareMap.get(Servo.class, Constant.ADJUSTABLE);
+//        hood.setPosition(Constant.HOOD_MIN_POS);
+//    }
+//
+//    @Override
+//    public void init_loop() {
+//        if (gamepad1.xWasPressed()) Constant.ALLIANCE_BLUE = true;
+//        if (gamepad1.bWasPressed()) Constant.ALLIANCE_BLUE = false;
+//
+//        telemetry.addData("Alliance", Constant.ALLIANCE_BLUE ? "BLUE" : "RED");
+//        telemetry.addLine("Alliance comes from the last auton. Override: X = blue, B = red");
+//        telemetry.update();
+//    }
+//
+//    @Override
+//    public void start() {
+//        gamepad1.xWasPressed();
+//        gamepad1.bWasPressed();
+//    }
+//
+//    @Override
+//    public void loop() {
+//        boolean bothBumpers = gamepad1.left_bumper && gamepad1.right_bumper;
+//        if (bothBumpers && !lastBothBumpers) Constant.ALLIANCE_BLUE = !Constant.ALLIANCE_BLUE;
+//        lastBothBumpers = bothBumpers;
+//
+//        boolean blue = Constant.ALLIANCE_BLUE;
+//        drive.update();
+//
+//        if (gamepad1.aWasPressed()) fieldCentric = !fieldCentric;
+//        if (gamepad1.xWasPressed()) resetToCorner(blue);
+//        if (gamepad1.yWasPressed()) setHeading(Field.driverForwardDeg(blue));
+//
+//        boolean shootTrigger = gamepad1.right_trigger > 0.5;
+//        if (shootTrigger && !lastShootTrigger) {
+//            shooting = !shooting;
+//            limiterOpen = false;
+//        }
+//        lastShootTrigger = shootTrigger;
+//
+//        if (gamepad1.dpadUpWasPressed()) {
+//            if (Constant.USE_SHOOT_TABLE) Constant.SHOOT_TABLE_TRIM_RPM += 50;
+//            else Constant.SHOOTER_SHOOT_RPM += 100;
+//        }
+//        if (gamepad1.dpadDownWasPressed()) {
+//            if (Constant.USE_SHOOT_TABLE) Constant.SHOOT_TABLE_TRIM_RPM -= 50;
+//            else Constant.SHOOTER_SHOOT_RPM = Math.max(0, Constant.SHOOTER_SHOOT_RPM - 100);
+//        }
+//
+//        topHive = Field.topHive(drive.botY, topHive);
+//        double goalX = Field.goalX(blue);
+//        double goalY = Field.goalY(blue, topHive);
+//        double goalDist = Math.hypot(goalX - drive.botX, goalY - drive.botY);
+//        double shootRpm = Constant.USE_SHOOT_TABLE
+//                ? Shooter.rpmForDistance(goalDist) + Constant.SHOOT_TABLE_TRIM_RPM
+//                : Constant.SHOOTER_SHOOT_RPM;
+//
+//        shooter.setTargetRpm(shooting ? shootRpm : Constant.SHOOTER_IDLE_RPM);
+//        shooter.update();
+//
+//        hood.setPosition(shooting ? Constant.HOOD_MAX_POS : Constant.HOOD_MIN_POS);
+//
+//        if (shooting && !limiterOpen && shooter.atSpeed()) {
+//            limiterOpen = true;
+//            limiterTimer.reset();
+//        }
+//        limiter.setPosition(limiterOpen ? Constant.LIMITER_OPEN : Constant.LIMITER_CLOSED);
+//
+//        boolean intakeHeld = gamepad1.left_trigger > 0.5;
+//        boolean feeding = limiterOpen && limiterTimer.seconds() >= TRANSFER_DELAY_SEC;
+//
+//        intake.setPower(intakeHeld || feeding ? 1.0 : 0.0);
+//        transfer.setPower(feeding ? 1.0 : 0.0);
+//
+//        double driveY = -gamepad1.left_stick_y;
+//        double driveX = gamepad1.left_stick_x;
+//        if (fieldCentric) {
+//            double a = drive.headingRad - Math.toRadians(Field.driverForwardDeg(blue));
+//            double rotX = driveX * Math.cos(-a) - driveY * Math.sin(-a);
+//            double rotY = driveX * Math.sin(-a) + driveY * Math.cos(-a);
+//            driveX = rotX;
+//            driveY = rotY;
+//        }
+//        drive.drive(driveY, driveX, gamepad1.right_stick_x, false);
+//
+//        telemetry.addData("Alliance", blue ? "BLUE" : "RED");
+//        telemetry.addData("Hive", topHive ? "TOP" : "BOTTOM");
+//        telemetry.addData("Goal Dist (in)", "%.1f", goalDist);
+//        telemetry.addData("Shoot RPM", "%.0f  (%s)", shootRpm, Constant.USE_SHOOT_TABLE ? "table, trim " + (int) Constant.SHOOT_TABLE_TRIM_RPM : "fixed");
+//        telemetry.addData("Field Centric", fieldCentric);
+//        telemetry.addData("Shooting", shooting);
+//        telemetry.addData("Intake", intakeHeld || feeding);
+//        telemetry.addData("Transfer", feeding);
+//        telemetry.addData("Shooter RPM", "%.0f / %.0f", shooter.velocityRpm, shooter.targetRpm);
+//        telemetry.addData("Shooter Ready", shooter.atSpeed());
+//        telemetry.addData("Limiter", limiterOpen ? "OPEN" : "CLOSED");
+//        telemetry.addData("Hood", shooting ? "UP" : "DOWN");
+//        telemetry.addData("Drive Pos", "X=%.1f  Y=%.1f", drive.botX, drive.botY);
+//        telemetry.addData("Robot Heading", "%.2f", drive.headingDeg);
+//        telemetry.update();
+//    }
+//
+//    private void setHeading(double headingDeg) {
+//        drive.pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, drive.botX, drive.botY, AngleUnit.DEGREES, headingDeg));
+//    }
+//
+//    private void resetToCorner(boolean blue) {
+//        drive.pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,
+//                Field.resetX(blue), Field.resetY(blue), AngleUnit.DEGREES, Field.resetHeadingDeg(blue)));
+//    }
+//
+//    @Override
+//    public void stop() {
+//        drive.stop();
+//        shooter.stop();
+//        intake.setPower(0);
+//        transfer.setPower(0);
+//    }
+//}

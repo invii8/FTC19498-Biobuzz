@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import com.pedropathing.revhub.localizers.PinpointLocalizer;
+import org.firstinspires.ftc.teamcode.OpMode.Auton.pedro.Constants;
 
 public class MecanumDrive {
     public DcMotor leftFront, rightFront, leftBack, rightBack;
@@ -30,12 +32,8 @@ public class MecanumDrive {
             m.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
+        new PinpointLocalizer(hwMap, Constants.localizerConfig);
         pinpoint = hwMap.get(GoBildaPinpointDriver.class, Constant.ODO);
-        pinpoint.setOffsets(Constant.ODO_X_OFFSET_IN, Constant.ODO_Y_OFFSET_IN, DistanceUnit.INCH);
-        pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        pinpoint.setEncoderDirections(
-                Constant.ODO_X_REVERSED ? GoBildaPinpointDriver.EncoderDirection.REVERSED : GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                Constant.ODO_Y_REVERSED ? GoBildaPinpointDriver.EncoderDirection.REVERSED : GoBildaPinpointDriver.EncoderDirection.FORWARD);
         pinpoint.resetPosAndIMU();
     }
 

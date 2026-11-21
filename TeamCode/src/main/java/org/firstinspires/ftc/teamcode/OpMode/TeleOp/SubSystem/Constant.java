@@ -27,11 +27,6 @@ public class Constant {
 
     public static final String ODO = "pinpoint";
 
-    public static double ODO_X_OFFSET_IN = -1.6485;
-    public static double ODO_Y_OFFSET_IN = -2.5669;
-    public static final boolean ODO_X_REVERSED = false;
-    public static final boolean ODO_Y_REVERSED = true;
-
     public static final String LIMELIGHT = "limelight";
 
     public static final String ADJUSTABLE = "hood";
@@ -41,8 +36,8 @@ public class Constant {
     public static double LIMITER_OPEN   = 0.85;
     public static double LIMITER_CLOSED = 0.1;
 
-    public static double RAMP_UP_POS          = 0.7;
-    public static double RAMP_DOWN_POS        = 0.4;
+    public static double RAMP_UP_POS          = 0.5;
+    public static double RAMP_DOWN_POS        = 0.188;
 
     public static double HOOD_MIN_POS = 0.435;
     public static double HOOD_MAX_POS = 0.5;
@@ -70,8 +65,8 @@ public class Constant {
     public static boolean SHOOTER_BOOST       = true;
     public static double  SHOOTER_BOOST_BELOW_RPM = 100;
 
-    public static double SHOOTER_IDLE_RPM  = 3700;
-    public static double SHOOTER_SHOOT_RPM = 3850;
+    public static double SHOOTER_IDLE_RPM  = 3550;
+    public static double SHOOTER_SHOOT_RPM = 3550;
     public static double SHOOTER_TARGET_RPM    = 3000;
     public static double SHOOTER_TOLERANCE_RPM = 100;
     public static double SHOOTER_TICKS_PER_REV = 28;
