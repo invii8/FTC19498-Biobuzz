@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.OpMode.Auton.pedro.Constants;
 import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Constant;
+import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Field;
 import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Shooter;
 
 @Config
@@ -201,6 +202,7 @@ public class RedShootPark extends OpMode {
         transfer.setPower(feeding ? 1.0 : 0.0);
 
         Pose p = follower.pose();
+        Field.saveAutonPose(false, p.x(), p.y(), Math.toDegrees(p.heading()));
         telemetry.addData("Path State",  pathState);
         telemetry.addData("Shoot Stage", shootStage);
         telemetry.addData("Path Busy",   follower.isBusy());

@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.OpMode.Auton.pedro.Constants;
 import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Constant;
 
 @Config
-@Autonomous(name = "⚪ Park Only", group = "00")
+@Autonomous(name = "⚪ Park Only", group = "00", preselectTeleOp = "Tele Of All Time")
 public class ParkOnly extends OpMode {
 
     public static double FORWARD_IN       = 15;
@@ -91,7 +91,7 @@ public class ParkOnly extends OpMode {
         if (gamepad1.x) Constant.ALLIANCE_BLUE = true;
         if (gamepad1.b) Constant.ALLIANCE_BLUE = false;
 
-        telemetry.addData("Auton", "FORWARD (ANY SIDE)");
+        telemetry.addData("Auton", "PARK ONLY (ANY SIDE)");
         telemetry.addData("Alliance for teleop", Constant.ALLIANCE_BLUE ? "BLUE" : "RED");
         telemetry.addLine("Press X for blue, B for red");
         telemetry.addData("Follower", follower == null ? "NOT SET UP (Constants.create returns null)" : "ready");

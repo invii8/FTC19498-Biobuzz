@@ -109,6 +109,7 @@ public class ComboTele extends OpMode {
 
         telemetry.addData("Alliance", Constant.ALLIANCE_BLUE ? "BLUE" : "RED");
         telemetry.addData("Limelight", limelight == null ? "NOT FOUND" : "found");
+        telemetry.addData("Position from auton", Field.hasAutonPose() ? "yes, odometry ready at start" : "none (corner + X)");
         telemetry.update();
     }
 
@@ -117,6 +118,11 @@ public class ComboTele extends OpMode {
         gamepad1.xWasPressed();
         gamepad1.bWasPressed();
         gamepad1.leftBumperWasPressed();
+
+        if (Field.hasAutonPose()) {
+            drive.pinpoint.setPosition(Field.takeAutonPose());
+            odoCalibrated = true;
+        }
     }
 
     @Override
