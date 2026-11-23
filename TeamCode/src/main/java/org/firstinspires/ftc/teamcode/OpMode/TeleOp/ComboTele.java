@@ -234,13 +234,11 @@ public class ComboTele extends OpMode {
         telemetry.addData("Alliance", blue ? "BLUE" : "RED");
         telemetry.addData("Limelight", limelight == null ? "NOT FOUND" : !limelightEnabled ? "OFF (dpad left)" : tagVisible ? "tags " + tagIds : "on, no tags");
         telemetry.addData("Odometry", !pinpointOk ? "PINPOINT FAULT" : !odoEnabled ? "OFF (dpad right)" : !odoCalibrated ? "NOT CALIBRATED (corner + X)" : "ok");
-        telemetry.addData("Aim", !shooting ? "-" : !hasAim ? "NONE (aim by hand)" : driverTurning ? "DRIVER OVERRIDE" : aimed ? "LOCKED" : "TURNING");
         telemetry.addData("Aim Error (deg)", "%.2f", aimError);
         telemetry.addData("Hive", topHive ? "TOP" : "BOTTOM");
         telemetry.addData("Goal Dist (in)", odoOk ? String.format("%.1f", goalDist) : "n/a");
         telemetry.addData("Shoot RPM", "%.0f  (%s)", shootRpm, useTable ? "table, trim " + (int) Constant.SHOOT_TABLE_TRIM_RPM : "fixed");
         telemetry.addData("Field Centric", fieldCentric);
-        telemetry.addData("Ramp", rampDown ? "DOWN" : "UP");
         telemetry.addData("Intake", intakeHeld || feeding || rampDown);
         telemetry.addData("Transfer", feeding);
         telemetry.addData("Shooter RPM", "%.0f / %.0f", shooter.velocityRpm, shooter.targetRpm);
@@ -266,6 +264,7 @@ public class ComboTele extends OpMode {
         double topSum = 0, bottomSum = 0;
         int topCount = 0, bottomCount = 0;
         String topIds = "", bottomIds = "";
+
         for (LLResultTypes.FiducialResult t : tags) {
             int id = t.getFiducialId();
             if (id == topTags[0] || id == topTags[1]) {

@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.OpMode.Auton.pedro.Constants;
 import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Constant;
 
 @Config
-@Autonomous(name = "FORWARD", group = "00", preselectTeleOp = "Tele Of ALl Time")
-public class Forward extends OpMode {
+@Autonomous(name = "⚪ Park Only", group = "00")
+public class ParkOnly extends OpMode {
 
     public static double FORWARD_IN       = 15;
     public static double RUN_SPEED        = 0.5;
