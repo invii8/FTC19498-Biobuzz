@@ -36,9 +36,8 @@ public class Constant {
     public static double LIMITER_OPEN   = 0.85;
     public static double LIMITER_CLOSED = 0.1;
 
-    public static double RAMP_UP_POS          = 0.5;
-    public static double RAMP_DOWN_POS        = 0.188;
-
+    public static double RAMP_UP_POS = 0.77;
+    public static double RAMP_DOWN_POS = 0.45;
     public static double HOOD_MIN_POS = 0.435;
     public static double HOOD_MAX_POS = 0.5;
     public static final String TURRET_LEFT  = "turret_left";
