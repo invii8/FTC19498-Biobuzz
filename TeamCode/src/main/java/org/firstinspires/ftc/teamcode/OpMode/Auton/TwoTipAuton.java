@@ -20,15 +20,15 @@ import org.firstinspires.ftc.teamcode.OpMode.TeleOp.SubSystem.Shooter;
 
 @Config
 public abstract class TwoTipAuton extends OpMode {
-    public static double PRELOAD_RPM = 3625;
+    public static double PRELOAD_RPM = 3650;
     public static double SHOT_1_RPM  = 3500;
     public static double SHOT_2_RPM  = 3500;
 
     public static double DRIVE_SPEED  = 1.0;
     public static double INTAKE_SPEED = 0.75;
 
-    public static double F1_PUSH_X = 7;
-    public static double F2_PUSH_Y = 134;
+    public static double F1_PUSH_X = 10;
+    public static double F2_PUSH_Y = 128;
 
     public static double SPINUP_TIMEOUT_SEC = 3.0;
     public static double FEED_TIME_SEC      = 2.5;
@@ -39,16 +39,13 @@ public abstract class TwoTipAuton extends OpMode {
     public static double INTAKE_OFF_AT      = 0.3;
     public static double RAMP_DOWN_AT       = 0.3;
 
-    static final double[] START        = {59,     5.1276,  90};
-    static final double[] F1_APPROACH  = {18.58,  46.61,  180};
-    static final double[] F2_APPROACH  = {46.77,  120.92,  90};
-    static final double[] SHOOT        = {55.12,  123.23, 270};
-    static final double[] PARK         = {10.312, 97.0525, 30};
-
-    static final double[] C_TO_F1      = {45.3728, 47.547};
-    static final double[] C_TO_SHOOT_1 = {23.3047, 91.7288};
-    static final double[] C_TO_F2      = {45.9890, 102.0905};
-    static final double[] C_TO_SHOOT_2 = {45.6764, 116.74};
+    static final double[] START        = {59,      5.1276,   90};
+    static final double[] F1_APPROACH  = {20,      46.61,    180};
+    static final double[] C_TO_SHOOT_1 = {27.686,  92.0263};
+    static final double[] SHOOT        = {55.12,   123.23,   275};
+    static final double[] F2_APPROACH  = {47.77,   120.92,   90};
+    static final double[] C_TO_SHOOT_2 = {52.596,  122.6671};
+    static final double[] PARK         = {10.312,  95,  30};
 
     protected abstract boolean isBlue();
 
@@ -106,11 +103,11 @@ public abstract class TwoTipAuton extends OpMode {
         Pose f2e = p(new double[]{F2_APPROACH[0], F2_PUSH_Y, F2_APPROACH[2]});
         Pose sh = p(SHOOT), pk = p(PARK);
 
-        toFlower1     = curve(start, ctrl(C_TO_F1), f1a).linear(start, f1a);
+        toFlower1     = line(start, f1a).linear(start, f1a);
         intakeFlower1 = line(f1a, f1e).tangent();
         backOff1      = line(f1e, f1a).reverseTangent();
         toShoot1      = curve(f1a, ctrl(C_TO_SHOOT_1), sh).reverseTangent();
-        toFlower2     = curve(sh, ctrl(C_TO_F2), f2a).constant(f2a);
+        toFlower2     = line(sh, f2a).constant(f2a);
         intakeFlower2 = line(f2a, f2e).constant(f2e);
         toShoot2      = curve(f2e, ctrl(C_TO_SHOOT_2), sh).linear(f2e, sh);
         park          = line(sh, pk).reverseTangent();
@@ -341,7 +338,7 @@ public abstract class TwoTipAuton extends OpMode {
         transfer.setPower(feeding ? 1.0 : 0.0);
 
         Pose pose = follower.pose();
-        Field.saveAutonPose(isBlue(), pose.x(), pose.y(), Math.toDegrees(pose.heading()));
+        Field.saveAutonPose(false, pose.x(), pose.y(), Math.toDegrees(pose.heading()));
 
         telemetry.addData("State",       state);
         telemetry.addData("Shot",        shot);
